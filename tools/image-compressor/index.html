@@ -29,6 +29,45 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Are my images uploaded to a server?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Compression is done entirely in your browser using the HTML Canvas API. Your image bytes never leave your device, which makes the tool both fast and fully private." }
+    },
+    {
+      "@type": "Question",
+      "name": "Which image formats are supported?",
+      "acceptedAnswer": { "@type": "Answer", "text": "JPG (JPEG), PNG, and WebP are supported as input. You can output as JPEG, WebP, or PNG, or keep the original format. WebP usually produces the smallest file size for photos." }
+    },
+    {
+      "@type": "Question",
+      "name": "How much can I expect to save?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Typical savings are 40–80% for photos at quality 75–85, often without visible loss. PNGs of screenshots may shrink less because PNG is already lossless. Converting JPEG to WebP at quality 80 commonly saves an additional 25–35%." }
+    },
+    {
+      "@type": "Question",
+      "name": "Will my image quality be reduced?",
+      "acceptedAnswer": { "@type": "Answer", "text": "JPEG and WebP are lossy formats and quality below 70 may show visible artifacts. Quality 75–85 is usually indistinguishable from the original. PNG output is lossless and preserves the image exactly, but produces larger files." }
+    },
+    {
+      "@type": "Question",
+      "name": "JPEG vs WebP vs PNG — which should I choose?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Use WebP for the smallest size and broad browser support in 2026. Use JPEG when you need maximum compatibility with older systems or third-party tools. Use PNG only for screenshots, line art, or images that require transparency." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is my compressed file sometimes larger than the original?",
+      "acceptedAnswer": { "@type": "Answer", "text": "If the original is already heavily compressed and you re-encode at high quality, the result can be slightly larger. Try lowering the quality, switching to WebP, or setting a max width to resize the image first." }
+    }
+  ]
+}
+</script>
+
 <style>
   .drop-zone {
     border: 2px dashed var(--border);
@@ -186,6 +225,40 @@
       <h3>Privacy</h3>
       <p>All processing uses your CPU/GPU. Images never leave your device, are not logged, and are not stored.</p>
     </article>
+
+    <section class="faq" id="faq">
+      <h2>Frequently Asked Questions</h2>
+
+      <details>
+        <summary>Are my images uploaded to a server?</summary>
+        <p>No. Compression is done entirely in your browser using the HTML Canvas API. Your image bytes never leave your device, which makes the tool both fast and fully private.</p>
+      </details>
+
+      <details>
+        <summary>Which image formats are supported?</summary>
+        <p>JPG (JPEG), PNG, and WebP are supported as input. You can output as JPEG, WebP, or PNG, or keep the original format. WebP usually produces the smallest file size for photos.</p>
+      </details>
+
+      <details>
+        <summary>How much can I expect to save?</summary>
+        <p>Typical savings are <strong>40–80%</strong> for photos at quality 75–85, often without visible loss. PNGs of screenshots may shrink less because PNG is already lossless. Converting JPEG to WebP at quality 80 commonly saves an additional 25–35%.</p>
+      </details>
+
+      <details>
+        <summary>Will my image quality be reduced?</summary>
+        <p>JPEG and WebP are lossy formats and quality below 70 may show visible artifacts. Quality <strong>75–85</strong> is usually indistinguishable from the original. PNG output is lossless and preserves the image exactly, but produces larger files.</p>
+      </details>
+
+      <details>
+        <summary>JPEG vs WebP vs PNG — which should I choose?</summary>
+        <p>Use <strong>WebP</strong> for the smallest size and broad browser support in 2026. Use <strong>JPEG</strong> when you need maximum compatibility with older systems or third-party tools. Use <strong>PNG</strong> only for screenshots, line art, or images that require transparency.</p>
+      </details>
+
+      <details>
+        <summary>Why is my compressed file sometimes larger than the original?</summary>
+        <p>If the original is already heavily compressed and you re-encode at high quality, the result can be slightly larger. Try lowering the quality, switching to WebP, or setting a max width to resize the image first.</p>
+      </details>
+    </section>
   </section>
 </main>
 

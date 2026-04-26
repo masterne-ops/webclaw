@@ -29,6 +29,45 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Are these passwords cryptographically secure?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. The generator uses the browser's built-in crypto.getRandomValues() API, which is a cryptographically secure pseudorandom number generator suitable for passwords, tokens, and keys." }
+    },
+    {
+      "@type": "Question",
+      "name": "Are generated passwords stored or logged anywhere?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Passwords are generated locally and exist only in your browser tab. They are not transmitted, logged, saved to history, or shared with any third party." }
+    },
+    {
+      "@type": "Question",
+      "name": "How long should my password be?",
+      "acceptedAnswer": { "@type": "Answer", "text": "12 characters is the minimum acceptable for everyday accounts. 16 to 20 is recommended for most uses. 24 or more is appropriate for sensitive accounts such as email, banking, and your password manager master password." }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I include symbols in my password?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Including symbols increases entropy slightly, but length matters more. A 20-character password without symbols is stronger than a 12-character password with symbols. If a website rejects symbols, increase the length instead." }
+    },
+    {
+      "@type": "Question",
+      "name": "What does 'entropy' mean for passwords?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Entropy measures how unpredictable a password is, in bits. Each random character drawn from a pool of N characters adds log2(N) bits. 80+ bits is strong; 100+ bits is very strong and currently considered uncrackable by brute force." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why use a password manager too?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Strong passwords are useless if you reuse them. A password manager (Bitwarden, 1Password, KeePass) lets you have a unique strong password per site without memorizing any of them — you only memorize the one master password." }
+    }
+  ]
+}
+</script>
+
 <style>
   .pwd-output {
     background: var(--surface);
@@ -172,6 +211,40 @@
       <h3>Privacy</h3>
       <p>Passwords are generated locally with the Web Crypto API. They are never sent over the network, never logged, and are not stored anywhere by this site.</p>
     </article>
+
+    <section class="faq" id="faq">
+      <h2>Frequently Asked Questions</h2>
+
+      <details>
+        <summary>Are these passwords cryptographically secure?</summary>
+        <p>Yes. The generator uses the browser's built-in <code>crypto.getRandomValues()</code> API, which is a cryptographically secure pseudorandom number generator suitable for passwords, tokens, and keys.</p>
+      </details>
+
+      <details>
+        <summary>Are generated passwords stored or logged anywhere?</summary>
+        <p>No. Passwords are generated locally and exist only in your browser tab. They are not transmitted, logged, saved to history, or shared with any third party.</p>
+      </details>
+
+      <details>
+        <summary>How long should my password be?</summary>
+        <p><strong>12 characters</strong> is the minimum acceptable for everyday accounts. <strong>16 to 20</strong> is recommended for most uses. <strong>24 or more</strong> is appropriate for sensitive accounts such as email, banking, and your password manager master password.</p>
+      </details>
+
+      <details>
+        <summary>Should I include symbols in my password?</summary>
+        <p>Including symbols increases entropy slightly, but <em>length matters more</em>. A 20-character password without symbols is stronger than a 12-character password with symbols. If a website rejects symbols, increase the length instead.</p>
+      </details>
+
+      <details>
+        <summary>What does "entropy" mean for passwords?</summary>
+        <p>Entropy measures how unpredictable a password is, in bits. Each random character drawn from a pool of <code>N</code> characters adds <code>log₂(N)</code> bits. 80+ bits is strong; 100+ bits is very strong and currently considered uncrackable by brute force.</p>
+      </details>
+
+      <details>
+        <summary>Why should I use a password manager too?</summary>
+        <p>Strong passwords are useless if you reuse them. A password manager (Bitwarden, 1Password, KeePass) lets you have a unique strong password per site without memorizing any of them — you only memorize the one master password.</p>
+      </details>
+    </section>
   </section>
 </main>
 

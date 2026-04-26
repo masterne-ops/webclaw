@@ -31,6 +31,45 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this JSON formatter free to use?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. The tool is completely free, with no sign-up, no rate limits, and no watermarks." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my JSON data sent to a server?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. All formatting, validation, and minification happens entirely in your browser using JavaScript. Your JSON never leaves your device." }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Format and Validate?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Format pretty-prints valid JSON with indentation. Validate only checks whether the JSON is syntactically correct without producing output. Use Validate when you only need a yes/no answer." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does my JSON show 'Unexpected token'?",
+      "acceptedAnswer": { "@type": "Answer", "text": "This usually means a syntax error: a stray comma, single quotes instead of double quotes, missing brackets, or comments (which standard JSON does not support). The error message includes the position to help you locate it." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can it handle large JSON files?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Because everything runs locally, the tool is limited only by your device's memory. Files up to several megabytes typically work without issue. For files larger than 50 MB, browser performance may slow down." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why would I want to minify JSON?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Minified JSON removes all unnecessary whitespace, reducing file size by 20–50%. This is useful when sending JSON over a network, embedding it in a URL, or storing it where bytes matter." }
+    }
+  ]
+}
+</script>
+
 <!-- AdSense placeholder -->
 <!--
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
@@ -119,6 +158,40 @@
         <li>Comments — standard JSON does not support <code>//</code> or <code>/* */</code> comments.</li>
       </ul>
     </article>
+
+    <section class="faq" id="faq">
+      <h2>Frequently Asked Questions</h2>
+
+      <details>
+        <summary>Is this JSON formatter free to use?</summary>
+        <p>Yes. The tool is completely free, with no sign-up, no rate limits, and no watermarks.</p>
+      </details>
+
+      <details>
+        <summary>Is my JSON data sent to a server?</summary>
+        <p>No. All formatting, validation, and minification happens entirely in your browser using JavaScript. Your JSON never leaves your device.</p>
+      </details>
+
+      <details>
+        <summary>What is the difference between Format and Validate?</summary>
+        <p><strong>Format</strong> pretty-prints valid JSON with indentation. <strong>Validate</strong> only checks whether the JSON is syntactically correct without producing output. Use Validate when you only need a yes/no answer.</p>
+      </details>
+
+      <details>
+        <summary>Why does my JSON show "Unexpected token"?</summary>
+        <p>This usually means a syntax error: a stray comma, single quotes instead of double quotes, missing brackets, or comments (which standard JSON does not support). The error message includes the position to help you locate it.</p>
+      </details>
+
+      <details>
+        <summary>Can it handle large JSON files?</summary>
+        <p>Yes. Because everything runs locally, the tool is limited only by your device's memory. Files up to several megabytes typically work without issue. For files larger than 50&nbsp;MB, browser performance may slow down.</p>
+      </details>
+
+      <details>
+        <summary>Why would I want to minify JSON?</summary>
+        <p>Minified JSON removes all unnecessary whitespace, reducing file size by 20–50%. This is useful when sending JSON over a network, embedding it in a URL, or storing it where bytes matter.</p>
+      </details>
+    </section>
   </section>
 </main>
 

@@ -29,6 +29,45 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is the QR code generation private?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. The QR code is generated entirely in your browser using JavaScript. The content you enter — including Wi-Fi passwords — is never transmitted to any server." }
+    },
+    {
+      "@type": "Question",
+      "name": "How much data can a QR code hold?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Up to about 4,296 alphanumeric characters or 7,089 numeric digits with the lowest error correction level. In practice, anything over a few hundred characters becomes too dense to scan reliably from a distance." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why doesn't my QR code scan?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The most common reasons: insufficient contrast between foreground and background, the code is too small or too dense, the camera is too close or too far, or the print is damaged. Try increasing the size, using black-on-white, and raising the error correction level." }
+    },
+    {
+      "@type": "Question",
+      "name": "What error correction level should I choose?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Level M (around 15%) is a good default for digital use. Use L for compact codes when storage matters. Use Q or H if you plan to print and the code may get smudged, partially covered, or have a logo overlaid." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I generate a Wi-Fi QR code?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Switch to the Wi-Fi tab and enter the SSID, password, and security type (WPA, WEP, or open). Most modern smartphones can join the network automatically when scanning the resulting code." }
+    },
+    {
+      "@type": "Question",
+      "name": "Will the QR code expire?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. QR codes encode the data directly, so the image you download will continue to work indefinitely. They do not contain a tracking link or expiration metadata." }
+    }
+  ]
+}
+</script>
+
 <style>
   .qr-layout {
     display: grid;
@@ -242,6 +281,40 @@
       <h3>Privacy</h3>
       <p>Everything happens in your browser using JavaScript. No data, including Wi-Fi passwords, is uploaded.</p>
     </article>
+
+    <section class="faq" id="faq">
+      <h2>Frequently Asked Questions</h2>
+
+      <details>
+        <summary>Is the QR code generation private?</summary>
+        <p>Yes. The QR code is generated entirely in your browser using JavaScript. The content you enter — including Wi-Fi passwords — is never transmitted to any server.</p>
+      </details>
+
+      <details>
+        <summary>How much data can a QR code hold?</summary>
+        <p>Up to about 4,296 alphanumeric characters or 7,089 numeric digits with the lowest error correction level. In practice, anything over a few hundred characters becomes too dense to scan reliably from a distance.</p>
+      </details>
+
+      <details>
+        <summary>Why doesn't my QR code scan?</summary>
+        <p>The most common reasons: insufficient contrast between foreground and background, the code is too small or too dense, the camera is too close or too far, or the print is damaged. Try increasing the size, using black-on-white, and raising the error correction level.</p>
+      </details>
+
+      <details>
+        <summary>What error correction level should I choose?</summary>
+        <p>Level <strong>M</strong> (around 15%) is a good default for digital use. Use <strong>L</strong> for compact codes when storage matters. Use <strong>Q</strong> or <strong>H</strong> if you plan to print and the code may get smudged, partially covered, or have a logo overlaid.</p>
+      </details>
+
+      <details>
+        <summary>Can I generate a Wi-Fi QR code?</summary>
+        <p>Yes. Switch to the Wi-Fi tab and enter the SSID, password, and security type (WPA, WEP, or open). Most modern smartphones can join the network automatically when scanning the resulting code.</p>
+      </details>
+
+      <details>
+        <summary>Will the QR code expire?</summary>
+        <p>No. QR codes encode the data directly, so the image you download will continue to work indefinitely. They do not contain a tracking link or expiration metadata.</p>
+      </details>
+    </section>
   </section>
 </main>
 

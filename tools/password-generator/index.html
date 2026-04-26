@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Password Generator — Free, Strong & Secure | webclaw</title>
+<meta name="description" content="Free online password generator. Create strong, random passwords with custom length, symbols, and numbers. Runs entirely in your browser using crypto-grade randomness." />
+<meta name="keywords" content="password generator, strong password, random password, secure password, online password tool" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://webclaw.pages.dev/tools/password-generator/" />
+
+<meta property="og:title" content="Password Generator — Strong & Secure" />
+<meta property="og:description" content="Generate strong, random passwords in your browser. Cryptographically secure." />
+<meta property="og:url" content="https://webclaw.pages.dev/tools/password-generator/" />
+<meta property="og:type" content="website" />
+
+<link rel="stylesheet" href="/assets/styles.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Password Generator",
+  "applicationCategory": "SecurityApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free online password generator. Create strong, cryptographically random passwords in your browser.",
+  "url": "https://webclaw.pages.dev/tools/password-generator/"
+}
+</script>
+
+<style>
+  .pwd-output {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 22px;
+    color: var(--text);
+    word-break: break-all;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .strength-bar {
+    height: 6px;
+    background: var(--surface-2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.2s, background 0.2s;
+  }
+  .strength-label {
+    font-size: 13px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    margin-top: -10px;
+    margin-bottom: 18px;
+  }
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } }
+  .opt-row { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .opt-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); }
+  .length-row { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; }
+  .length-row input[type=range] { flex: 1; accent-color: var(--accent); }
+  .length-row .num {
+    width: 56px;
+    text-align: center;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px;
+    font-family: monospace;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">web<span>claw</span></a>
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="container tool-page">
+    <h1>Password Generator</h1>
+    <p class="lead">Generate strong, random passwords using your browser's cryptographic random source. Nothing is sent over the network.</p>
+
+    <div class="pwd-output" id="output" aria-live="polite">click Generate</div>
+
+    <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+    <div class="strength-label">
+      <span id="strength-text">—</span>
+      <span id="entropy-text"></span>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn primary" id="btn-generate">Generate</button>
+      <button class="btn" id="btn-copy">Copy</button>
+    </div>
+
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+
+    <div class="options-grid">
+      <div class="length-row">
+        <label for="length" style="font-size:14px;">Length</label>
+        <input id="length" type="range" min="4" max="128" value="20" />
+        <input id="length-num" class="num" type="number" min="4" max="128" value="20" />
+      </div>
+      <label class="opt-row"><input type="checkbox" id="opt-lower" checked /> Lowercase (a–z)</label>
+      <label class="opt-row"><input type="checkbox" id="opt-upper" checked /> Uppercase (A–Z)</label>
+      <label class="opt-row"><input type="checkbox" id="opt-digits" checked /> Numbers (0–9)</label>
+      <label class="opt-row"><input type="checkbox" id="opt-symbols" /> Symbols (!@#$…)</label>
+      <label class="opt-row"><input type="checkbox" id="opt-no-similar" /> Exclude similar (l, 1, I, O, 0)</label>
+      <label class="opt-row"><input type="checkbox" id="opt-no-ambiguous" /> Exclude ambiguous ({}, [], (), &lt;&gt;, /, \)</label>
+    </div>
+
+    <div class="ad-slot" id="ad-slot-1"></div>
+
+    <article class="article">
+      <h2>About this Password Generator</h2>
+      <p>Reusing passwords is the single biggest cause of account takeovers. A unique, long, random password for every important account — stored in a password manager — is the modern standard. This generator uses the browser's <code>crypto.getRandomValues()</code> API, which is cryptographically secure and suitable for passwords.</p>
+
+      <h3>How long should a password be?</h3>
+      <ul>
+        <li><strong>12 characters</strong> — minimum acceptable for everyday accounts.</li>
+        <li><strong>16–20 characters</strong> — recommended default for most uses.</li>
+        <li><strong>24+ characters</strong> — for sensitive accounts (email, banking, password manager master password).</li>
+      </ul>
+
+      <h3>What makes a password strong?</h3>
+      <p>Strength is measured in <em>entropy</em> — roughly, how many guesses an attacker would need on average. Each random character drawn from a pool of size <code>N</code> adds <code>log₂(N)</code> bits. For example, 16 random characters from a 70-character pool yield about 98 bits of entropy, which is far beyond brute-force range with current technology.</p>
+
+      <h3>Tips</h3>
+      <ul>
+        <li><strong>Use a password manager.</strong> You should not need to memorize random passwords — store them in 1Password, Bitwarden, KeePass, or similar.</li>
+        <li><strong>Enable two-factor auth</strong> on important accounts. A strong password is the first lock; 2FA is the second.</li>
+        <li><strong>Avoid symbols only when needed.</strong> Some old systems reject certain symbols; if a site complains, regenerate without symbols rather than weakening the length.</li>
+      </ul>
+
+      <h3>Privacy</h3>
+      <p>Passwords are generated locally with the Web Crypto API. They are never sent over the network, never logged, and are not stored anywhere by this site.</p>
+    </article>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>
+      <a href="/">Home</a> ·
+      <a href="/about.html">About</a> ·
+      <a href="/privacy.html">Privacy</a>
+    </p>
+    <p style="margin-top:8px;">&copy; <span id="year"></span> webclaw</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var LOWER = 'abcdefghijklmnopqrstuvwxyz';
+  var UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var DIGITS = '0123456789';
+  var SYMBOLS = "!@#$%^&*-_=+?";
+  var SIMILAR = /[lI1O0]/g;
+  var AMBIGUOUS = /[{}\[\]()<>\/\\'"`~,;:]/g;
+
+  function $(s) { return document.querySelector(s); }
+
+  function buildAlphabet() {
+    var a = '';
+    if ($('#opt-lower').checked) a += LOWER;
+    if ($('#opt-upper').checked) a += UPPER;
+    if ($('#opt-digits').checked) a += DIGITS;
+    if ($('#opt-symbols').checked) a += SYMBOLS;
+    if ($('#opt-no-similar').checked) a = a.replace(SIMILAR, '');
+    if ($('#opt-no-ambiguous').checked) a = a.replace(AMBIGUOUS, '');
+    // dedupe
+    var seen = {}, out = '';
+    for (var i = 0; i < a.length; i++) {
+      if (!seen[a[i]]) { seen[a[i]] = 1; out += a[i]; }
+    }
+    return out;
+  }
+
+  function generate() {
+    var len = parseInt($('#length').value, 10) || 20;
+    if (len < 4) len = 4;
+    if (len > 128) len = 128;
+
+    var alpha = buildAlphabet();
+    if (!alpha) {
+      $('#output').textContent = 'Select at least one character set';
+      updateStrength(0, 0);
+      return;
+    }
+
+    // unbiased rejection sampling
+    var max = Math.floor(256 / alpha.length) * alpha.length;
+    var buf = new Uint8Array(len * 2);
+    var out = '';
+    while (out.length < len) {
+      crypto.getRandomValues(buf);
+      for (var i = 0; i < buf.length && out.length < len; i++) {
+        if (buf[i] < max) out += alpha.charAt(buf[i] % alpha.length);
+      }
+    }
+    $('#output').textContent = out;
+
+    // entropy bits
+    var bits = len * Math.log2(alpha.length);
+    updateStrength(bits, alpha.length);
+  }
+
+  function updateStrength(bits, poolSize) {
+    var fill = $('#strength-fill');
+    var txt = $('#strength-text');
+    var ent = $('#entropy-text');
+
+    var pct = Math.min(100, (bits / 128) * 100);
+    fill.style.width = pct + '%';
+
+    var label, color;
+    if (bits < 28) { label = 'Very weak'; color = '#ef4444'; }
+    else if (bits < 50) { label = 'Weak'; color = '#f59e0b'; }
+    else if (bits < 80) { label = 'Reasonable'; color = '#eab308'; }
+    else if (bits < 110) { label = 'Strong'; color = '#84cc16'; }
+    else { label = 'Very strong'; color = '#22c55e'; }
+    fill.style.background = color;
+    txt.textContent = label;
+    ent.textContent = bits ? Math.round(bits) + ' bits / pool ' + poolSize : '';
+  }
+
+  // length slider <-> number sync
+  var lenSlider = $('#length'), lenNum = $('#length-num');
+  lenSlider.addEventListener('input', function () { lenNum.value = lenSlider.value; generate(); });
+  lenNum.addEventListener('input', function () {
+    var v = parseInt(lenNum.value, 10) || 4;
+    if (v < 4) v = 4; if (v > 128) v = 128;
+    lenSlider.value = v;
+    generate();
+  });
+
+  ['opt-lower', 'opt-upper', 'opt-digits', 'opt-symbols', 'opt-no-similar', 'opt-no-ambiguous'].forEach(function (id) {
+    document.getElementById(id).addEventListener('change', generate);
+  });
+
+  $('#btn-generate').addEventListener('click', generate);
+
+  $('#btn-copy').addEventListener('click', function () {
+    var text = $('#output').textContent;
+    if (!text || text.indexOf('Select at least') === 0 || text === 'click Generate') {
+      var s = $('#status');
+      s.textContent = 'Nothing to copy.';
+      s.className = 'status err show';
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function () {
+      var s = $('#status');
+      s.textContent = 'Copied to clipboard.';
+      s.className = 'status ok show';
+      setTimeout(function () { s.classList.remove('show'); }, 1500);
+    });
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // initial password
+  generate();
+})();
+</script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8f7eb7845b6441b7bdc99c35920e3251"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

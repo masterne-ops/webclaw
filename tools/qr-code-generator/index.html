@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QR Code Generator — Free Online Tool | webclaw</title>
+<meta name="description" content="Generate QR codes for URLs, text, Wi-Fi, and more. Free, fast, and private — runs entirely in your browser. Download as PNG." />
+<meta name="keywords" content="qr code generator, qr code maker, free qr code, qr code online, generate qr code" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://webclaw.pages.dev/tools/qr-code-generator/" />
+
+<meta property="og:title" content="QR Code Generator — Free Online Tool" />
+<meta property="og:description" content="Generate QR codes for URLs, text, Wi-Fi. Runs entirely in your browser." />
+<meta property="og:url" content="https://webclaw.pages.dev/tools/qr-code-generator/" />
+<meta property="og:type" content="website" />
+
+<link rel="stylesheet" href="/assets/styles.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "QR Code Generator",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free online QR code generator. Generate QR codes for URLs, text, Wi-Fi instantly in your browser.",
+  "url": "https://webclaw.pages.dev/tools/qr-code-generator/"
+}
+</script>
+
+<style>
+  .qr-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .qr-layout { grid-template-columns: 1fr; }
+  }
+  .qr-form label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin: 14px 0 6px;
+  }
+  .qr-form input[type=text],
+  .qr-form input[type=number],
+  .qr-form select,
+  .qr-form textarea {
+    width: 100%;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 9px 11px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+  }
+  .qr-form input:focus,
+  .qr-form textarea:focus,
+  .qr-form select:focus { border-color: var(--accent); }
+  .qr-form textarea { resize: vertical; min-height: 80px; }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .color-row { display: flex; align-items: center; gap: 8px; }
+  .color-row input[type=color] {
+    width: 38px; height: 36px; padding: 0;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; cursor: pointer;
+  }
+  .preview-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    position: sticky;
+    top: 80px;
+  }
+  #qr-canvas {
+    background: #fff;
+    border-radius: 6px;
+    max-width: 100%;
+    height: auto;
+  }
+  .preview-actions { margin-top: 14px; display: flex; gap: 8px; justify-content: center; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
+  .tab {
+    padding: 7px 12px; font-size: 13px; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text-dim); border-radius: 6px;
+  }
+  .tab.active { background: var(--accent); color: #0b1020; border-color: var(--accent); font-weight: 600; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">web<span>claw</span></a>
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="container tool-page">
+    <h1>QR Code Generator</h1>
+    <p class="lead">Generate a QR code for a URL, text, Wi-Fi credentials, contact card, and more. Runs entirely in your browser — nothing is uploaded.</p>
+
+    <div class="qr-layout">
+      <div class="qr-form">
+        <div class="tabs" role="tablist">
+          <div class="tab active" data-tab="url">URL</div>
+          <div class="tab" data-tab="text">Text</div>
+          <div class="tab" data-tab="wifi">Wi-Fi</div>
+          <div class="tab" data-tab="email">Email</div>
+          <div class="tab" data-tab="sms">SMS</div>
+        </div>
+
+        <div class="panel active" data-panel="url">
+          <label for="in-url">URL</label>
+          <input id="in-url" type="text" placeholder="https://example.com" value="https://webclaw.pages.dev/" />
+        </div>
+        <div class="panel" data-panel="text">
+          <label for="in-text">Text</label>
+          <textarea id="in-text" placeholder="Any text..."></textarea>
+        </div>
+        <div class="panel" data-panel="wifi">
+          <label for="wifi-ssid">Network name (SSID)</label>
+          <input id="wifi-ssid" type="text" placeholder="MyWiFi" />
+          <div class="row-2">
+            <div>
+              <label for="wifi-pass">Password</label>
+              <input id="wifi-pass" type="text" placeholder="" />
+            </div>
+            <div>
+              <label for="wifi-enc">Security</label>
+              <select id="wifi-enc">
+                <option value="WPA">WPA / WPA2</option>
+                <option value="WEP">WEP</option>
+                <option value="nopass">None</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="panel" data-panel="email">
+          <label for="em-to">To</label>
+          <input id="em-to" type="text" placeholder="someone@example.com" />
+          <label for="em-subj">Subject (optional)</label>
+          <input id="em-subj" type="text" />
+          <label for="em-body">Body (optional)</label>
+          <textarea id="em-body"></textarea>
+        </div>
+        <div class="panel" data-panel="sms">
+          <label for="sms-num">Phone number</label>
+          <input id="sms-num" type="text" placeholder="+1234567890" />
+          <label for="sms-msg">Message (optional)</label>
+          <textarea id="sms-msg"></textarea>
+        </div>
+
+        <div class="row-2" style="margin-top:16px;">
+          <div>
+            <label for="opt-size">Size (px)</label>
+            <input id="opt-size" type="number" min="128" max="2048" step="32" value="512" />
+          </div>
+          <div>
+            <label for="opt-ec">Error correction</label>
+            <select id="opt-ec">
+              <option value="L">L (~7%)</option>
+              <option value="M" selected>M (~15%)</option>
+              <option value="Q">Q (~25%)</option>
+              <option value="H">H (~30%)</option>
+            </select>
+          </div>
+        </div>
+        <div class="row-2">
+          <div>
+            <label>Foreground</label>
+            <div class="color-row">
+              <input id="opt-fg" type="color" value="#000000" />
+              <input id="opt-fg-text" type="text" value="#000000" />
+            </div>
+          </div>
+          <div>
+            <label>Background</label>
+            <div class="color-row">
+              <input id="opt-bg" type="color" value="#ffffff" />
+              <input id="opt-bg-text" type="text" value="#ffffff" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-box">
+        <canvas id="qr-canvas" width="320" height="320" aria-label="QR code preview"></canvas>
+        <div class="preview-actions">
+          <button class="btn primary" id="btn-download">Download PNG</button>
+          <button class="btn" id="btn-copy">Copy</button>
+        </div>
+        <div class="status" id="status" role="status" aria-live="polite" style="margin-top:14px;"></div>
+      </div>
+    </div>
+
+    <div class="ad-slot" id="ad-slot-1"></div>
+
+    <article class="article">
+      <h2>About this QR Code Generator</h2>
+      <p>QR codes are a fast way to share a URL, network credentials, or contact information between devices. This tool generates a QR code from your input directly in the browser — your data is never sent to any server.</p>
+
+      <h3>Supported types</h3>
+      <ul>
+        <li><strong>URL</strong> — link to any website. Phones with a camera will open it directly.</li>
+        <li><strong>Text</strong> — plain text up to a few hundred characters.</li>
+        <li><strong>Wi-Fi</strong> — connect a phone to your Wi-Fi by scanning. Supports WPA, WEP, or open networks.</li>
+        <li><strong>Email</strong> — start a new email with prefilled subject and body.</li>
+        <li><strong>SMS</strong> — open the messaging app to a specific number with an optional message.</li>
+      </ul>
+
+      <h3>Tips</h3>
+      <ul>
+        <li>Use higher <strong>error correction</strong> if you plan to print and the code may get smudged. Level H tolerates ~30% damage.</li>
+        <li>Keep enough <strong>contrast</strong> between foreground and background. Light text on dark background often fails to scan.</li>
+        <li>For printing, generate at <strong>1024 px or larger</strong> so the image stays crisp at any physical size.</li>
+        <li>Very long URLs make the QR code dense and harder to scan from a distance — consider a URL shortener first.</li>
+      </ul>
+
+      <h3>Privacy</h3>
+      <p>Everything happens in your browser using JavaScript. No data, including Wi-Fi passwords, is uploaded.</p>
+    </article>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>
+      <a href="/">Home</a> ·
+      <a href="/about.html">About</a> ·
+      <a href="/privacy.html">Privacy</a>
+    </p>
+    <p style="margin-top:8px;">&copy; <span id="year"></span> webclaw</p>
+  </div>
+</footer>
+
+<!-- qrcode-generator by Kazuhiko Arase, MIT licensed. Loaded from jsDelivr CDN. -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+
+<script>
+(function () {
+  // ---- helpers ----
+  function $(s) { return document.querySelector(s); }
+  function $$(s) { return Array.from(document.querySelectorAll(s)); }
+
+  function showStatus(msg, ok) {
+    var s = $('#status');
+    s.textContent = msg;
+    s.classList.remove('ok', 'err');
+    s.classList.add(ok ? 'ok' : 'err');
+    s.classList.add('show');
+    if (ok) setTimeout(function () { s.classList.remove('show'); }, 2000);
+  }
+
+  // ---- tabs ----
+  var currentTab = 'url';
+  $$('.tab').forEach(function (el) {
+    el.addEventListener('click', function () {
+      $$('.tab').forEach(function (t) { t.classList.remove('active'); });
+      el.classList.add('active');
+      currentTab = el.getAttribute('data-tab');
+      $$('.panel').forEach(function (p) { p.classList.remove('active'); });
+      $('.panel[data-panel="' + currentTab + '"]').classList.add('active');
+      render();
+    });
+  });
+
+  // ---- color sync ----
+  function syncColor(picker, text) {
+    function toHex(v) {
+      v = v.trim();
+      if (/^#?[0-9a-f]{6}$/i.test(v)) return v[0] === '#' ? v : '#' + v;
+      return null;
+    }
+    picker.addEventListener('input', function () { text.value = picker.value; render(); });
+    text.addEventListener('input', function () {
+      var h = toHex(text.value);
+      if (h) { picker.value = h; render(); }
+    });
+  }
+  syncColor($('#opt-fg'), $('#opt-fg-text'));
+  syncColor($('#opt-bg'), $('#opt-bg-text'));
+
+  // ---- payload builders ----
+  function escapeWifi(s) {
+    return String(s).replace(/([\\;,":])/g, '\\$1');
+  }
+  function buildPayload() {
+    if (currentTab === 'url') {
+      return $('#in-url').value.trim();
+    }
+    if (currentTab === 'text') {
+      return $('#in-text').value;
+    }
+    if (currentTab === 'wifi') {
+      var ssid = escapeWifi($('#wifi-ssid').value);
+      var pass = escapeWifi($('#wifi-pass').value);
+      var enc = $('#wifi-enc').value;
+      if (!ssid) return '';
+      if (enc === 'nopass') return 'WIFI:T:nopass;S:' + ssid + ';;';
+      return 'WIFI:T:' + enc + ';S:' + ssid + ';P:' + pass + ';;';
+    }
+    if (currentTab === 'email') {
+      var to = $('#em-to').value.trim();
+      if (!to) return '';
+      var qs = [];
+      var subj = $('#em-subj').value;
+      var body = $('#em-body').value;
+      if (subj) qs.push('subject=' + encodeURIComponent(subj));
+      if (body) qs.push('body=' + encodeURIComponent(body));
+      return 'mailto:' + to + (qs.length ? '?' + qs.join('&') : '');
+    }
+    if (currentTab === 'sms') {
+      var num = $('#sms-num').value.trim();
+      if (!num) return '';
+      var msg = $('#sms-msg').value;
+      return 'SMSTO:' + num + (msg ? ':' + msg : '');
+    }
+    return '';
+  }
+
+  // ---- render ----
+  function render() {
+    var payload = buildPayload();
+    var canvas = $('#qr-canvas');
+    var ctx = canvas.getContext('2d');
+    var size = parseInt($('#opt-size').value, 10) || 512;
+    canvas.width = size;
+    canvas.height = size;
+
+    if (!payload) {
+      ctx.fillStyle = $('#opt-bg').value;
+      ctx.fillRect(0, 0, size, size);
+      ctx.fillStyle = '#999';
+      ctx.font = (size / 24) + 'px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Enter content...', size / 2, size / 2);
+      return;
+    }
+
+    try {
+      // typeNumber 0 = auto-detect smallest type that fits
+      var ec = $('#opt-ec').value;
+      var qr = qrcode(0, ec);
+      qr.addData(payload);
+      qr.make();
+
+      var moduleCount = qr.getModuleCount();
+      var quietZone = 4; // standard quiet zone in modules
+      var totalModules = moduleCount + quietZone * 2;
+      var moduleSize = Math.floor(size / totalModules);
+      var actualSize = moduleSize * totalModules;
+      var offset = Math.floor((size - actualSize) / 2);
+
+      ctx.fillStyle = $('#opt-bg').value;
+      ctx.fillRect(0, 0, size, size);
+
+      ctx.fillStyle = $('#opt-fg').value;
+      for (var r = 0; r < moduleCount; r++) {
+        for (var c = 0; c < moduleCount; c++) {
+          if (qr.isDark(r, c)) {
+            ctx.fillRect(
+              offset + (c + quietZone) * moduleSize,
+              offset + (r + quietZone) * moduleSize,
+              moduleSize, moduleSize
+            );
+          }
+        }
+      }
+    } catch (e) {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, size, size);
+      ctx.fillStyle = '#c00';
+      ctx.font = (size / 28) + 'px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Content too long for selected error level', size / 2, size / 2);
+    }
+  }
+
+  // bind inputs
+  $$('input, textarea, select').forEach(function (el) {
+    el.addEventListener('input', render);
+    el.addEventListener('change', render);
+  });
+
+  // ---- download ----
+  $('#btn-download').addEventListener('click', function () {
+    var canvas = $('#qr-canvas');
+    canvas.toBlob(function (blob) {
+      if (!blob) { showStatus('Failed to create image.', false); return; }
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'qrcode-' + Date.now() + '.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showStatus('Downloaded.', true);
+    }, 'image/png');
+  });
+
+  $('#btn-copy').addEventListener('click', function () {
+    var canvas = $('#qr-canvas');
+    if (!canvas.toBlob || !window.ClipboardItem) {
+      showStatus('Copy not supported in this browser. Use Download.', false);
+      return;
+    }
+    canvas.toBlob(function (blob) {
+      navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(function () {
+        showStatus('Copied to clipboard.', true);
+      }, function () {
+        showStatus('Copy failed. Use Download instead.', false);
+      });
+    });
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // initial render
+  render();
+})();
+</script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8f7eb7845b6441b7bdc99c35920e3251"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

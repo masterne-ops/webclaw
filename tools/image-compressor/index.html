@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Image Compressor — Free Online JPG/PNG/WebP | webclaw</title>
+<meta name="description" content="Compress JPG, PNG, and WebP images in your browser. Reduce file size with adjustable quality, batch processing, and zero upload. 100% private." />
+<meta name="keywords" content="image compressor, compress image, jpg compressor, png compressor, webp compressor, reduce image size, online image compression" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://webclaw.pages.dev/tools/image-compressor/" />
+
+<meta property="og:title" content="Image Compressor — Free Online JPG/PNG/WebP" />
+<meta property="og:description" content="Compress images in your browser. No upload, no signup, fully private." />
+<meta property="og:url" content="https://webclaw.pages.dev/tools/image-compressor/" />
+<meta property="og:type" content="website" />
+
+<link rel="stylesheet" href="/assets/styles.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Image Compressor",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free online image compressor for JPG, PNG, and WebP. Runs entirely in your browser.",
+  "url": "https://webclaw.pages.dev/tools/image-compressor/"
+}
+</script>
+
+<style>
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 40px 20px;
+    text-align: center;
+    background: var(--surface);
+    transition: border-color 0.15s, background 0.15s;
+    cursor: pointer;
+  }
+  .drop-zone.drag-over { border-color: var(--accent); background: rgba(91, 141, 239, 0.06); }
+  .drop-zone p { color: var(--text-dim); margin: 6px 0; }
+  .drop-zone .hint { font-size: 13px; }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin: 16px 0;
+  }
+  @media (max-width: 700px) { .controls { grid-template-columns: 1fr; } }
+  .control label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .control input[type=range] { width: 100%; accent-color: var(--accent); }
+  .control select, .control input[type=number] {
+    width: 100%;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 10px;
+  }
+  .quality-row { display: flex; align-items: center; gap: 10px; }
+  .quality-num { width: 50px; text-align: center; font-family: monospace; }
+
+  .file-list { margin-top: 16px; }
+  .file-item {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  .file-thumb {
+    width: 64px; height: 64px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: var(--surface-2);
+  }
+  .file-meta { font-size: 13px; color: var(--text-dim); }
+  .file-meta .name { color: var(--text); font-weight: 500; word-break: break-all; }
+  .saving { color: var(--success); font-weight: 600; }
+  .increase { color: var(--error); }
+
+  .global-actions { display: flex; gap: 8px; margin: 8px 0 16px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">web<span>claw</span></a>
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="container tool-page">
+    <h1>Image Compressor</h1>
+    <p class="lead">Drop your JPG, PNG, or WebP images below. Compression happens in your browser — files are never uploaded.</p>
+
+    <div class="drop-zone" id="drop">
+      <p style="font-size:16px; color: var(--text);">Click to choose images, or drag & drop here</p>
+      <p class="hint">Supports JPG, PNG, WebP · multiple files OK · max ~30 MB each</p>
+      <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none" />
+    </div>
+
+    <div class="controls">
+      <div class="control">
+        <label for="format">Output format</label>
+        <select id="format">
+          <option value="auto" selected>Same as input</option>
+          <option value="image/jpeg">JPEG</option>
+          <option value="image/webp">WebP (smaller)</option>
+          <option value="image/png">PNG (lossless)</option>
+        </select>
+      </div>
+      <div class="control">
+        <label>Quality</label>
+        <div class="quality-row">
+          <input id="quality" type="range" min="10" max="100" value="80" />
+          <span class="quality-num" id="quality-num">80</span>
+        </div>
+      </div>
+      <div class="control">
+        <label for="max-w">Max width (px, 0 = keep)</label>
+        <input id="max-w" type="number" min="0" max="20000" step="100" value="0" />
+      </div>
+    </div>
+
+    <div class="global-actions" id="global-actions" style="display:none;">
+      <button class="btn primary" id="btn-download-all">Download All (ZIP not needed — one by one)</button>
+      <button class="btn" id="btn-clear">Clear all</button>
+    </div>
+
+    <div class="file-list" id="file-list"></div>
+
+    <div class="ad-slot" id="ad-slot-1"></div>
+
+    <article class="article">
+      <h2>About this Image Compressor</h2>
+      <p>This tool compresses images entirely in your browser using the HTML Canvas API and the browser's built-in JPEG / PNG / WebP encoders. Nothing is uploaded to any server, which makes it both fast and private — the larger the image, the more this matters.</p>
+
+      <h3>Choosing a format</h3>
+      <ul>
+        <li><strong>JPEG</strong> — best for photos. Lossy, supports a wide quality range, no transparency.</li>
+        <li><strong>WebP</strong> — best overall in 2026. Typically 20–35% smaller than JPEG at the same visual quality, with optional transparency. Supported in all modern browsers.</li>
+        <li><strong>PNG</strong> — lossless, best for screenshots, line art, and images with transparency.</li>
+      </ul>
+
+      <h3>Choosing a quality level</h3>
+      <ul>
+        <li><strong>90–100</strong> — visually lossless, large files. Use only if you'll re-edit later.</li>
+        <li><strong>75–85</strong> — recommended default. Hard to tell from the original by eye.</li>
+        <li><strong>60–75</strong> — clearly compressed but still acceptable for the web.</li>
+        <li><strong>Below 60</strong> — visible artifacts, only for thumbnails or strictly bandwidth-limited cases.</li>
+      </ul>
+
+      <h3>Resizing</h3>
+      <p>If you set a <strong>max width</strong>, oversized images are scaled down before compression while keeping the aspect ratio. This often saves more bytes than aggressive quality reduction. For most websites, 1600–2000 px is plenty.</p>
+
+      <h3>Privacy</h3>
+      <p>All processing uses your CPU/GPU. Images never leave your device, are not logged, and are not stored.</p>
+    </article>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>
+      <a href="/">Home</a> ·
+      <a href="/about.html">About</a> ·
+      <a href="/privacy.html">Privacy</a>
+    </p>
+    <p style="margin-top:8px;">&copy; <span id="year"></span> webclaw</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  function $(s) { return document.querySelector(s); }
+  var dropZone = $('#drop');
+  var fileInput = $('#file-input');
+  var listEl = $('#file-list');
+  var globalActions = $('#global-actions');
+
+  function fmtBytes(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
+    return (b / 1024 / 1024).toFixed(2) + ' MB';
+  }
+
+  // ---- drop zone ----
+  dropZone.addEventListener('click', function () { fileInput.click(); });
+  fileInput.addEventListener('change', function (e) {
+    handleFiles(e.target.files);
+    fileInput.value = '';
+  });
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    dropZone.addEventListener(ev, function (e) {
+      e.preventDefault(); e.stopPropagation();
+      dropZone.classList.add('drag-over');
+    });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    dropZone.addEventListener(ev, function (e) {
+      e.preventDefault(); e.stopPropagation();
+      dropZone.classList.remove('drag-over');
+    });
+  });
+  dropZone.addEventListener('drop', function (e) {
+    if (e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files);
+  });
+
+  function handleFiles(files) {
+    Array.from(files).forEach(function (f) {
+      if (!/^image\/(jpeg|png|webp)$/.test(f.type)) return;
+      addFile(f);
+    });
+    if (listEl.children.length) globalActions.style.display = 'flex';
+  }
+
+  // ---- compression ----
+  function compressImage(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var maxW = parseInt($('#max-w').value, 10) || 0;
+        if (maxW > 0 && w > maxW) {
+          h = Math.round(h * (maxW / w));
+          w = maxW;
+        }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+
+        var fmt = $('#format').value;
+        var mime = fmt === 'auto' ? file.type : fmt;
+        var quality = parseInt($('#quality').value, 10) / 100;
+
+        canvas.toBlob(function (blob) {
+          URL.revokeObjectURL(url);
+          if (!blob) return reject(new Error('Encode failed'));
+          resolve({ blob: blob, mime: mime, w: w, h: h });
+        }, mime, mime === 'image/png' ? undefined : quality);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Could not decode image')); };
+      img.src = url;
+    });
+  }
+
+  function addFile(file) {
+    var item = document.createElement('div');
+    item.className = 'file-item';
+    item.innerHTML =
+      '<img class="file-thumb" alt="" />' +
+      '<div class="file-meta">' +
+        '<div class="name"></div>' +
+        '<div class="sizes">Compressing…</div>' +
+      '</div>' +
+      '<div><button class="btn dl-btn" disabled>Download</button></div>';
+    listEl.appendChild(item);
+
+    var thumb = item.querySelector('.file-thumb');
+    var nameEl = item.querySelector('.name');
+    var sizesEl = item.querySelector('.sizes');
+    var dlBtn = item.querySelector('.dl-btn');
+    nameEl.textContent = file.name;
+    thumb.src = URL.createObjectURL(file);
+
+    compressImage(file).then(function (res) {
+      var saved = file.size - res.blob.size;
+      var pct = (saved / file.size * 100);
+      var savedClass = saved >= 0 ? 'saving' : 'increase';
+      var arrow = saved >= 0 ? '↓' : '↑';
+      sizesEl.innerHTML =
+        fmtBytes(file.size) + ' → ' + fmtBytes(res.blob.size) +
+        ' <span class="' + savedClass + '">(' + arrow + ' ' + Math.abs(pct).toFixed(1) + '%)</span>' +
+        ' · ' + res.w + '×' + res.h;
+
+      var ext = res.mime.split('/')[1].replace('jpeg', 'jpg');
+      var baseName = file.name.replace(/\.[^.]+$/, '');
+      var outName = baseName + '-compressed.' + ext;
+
+      dlBtn.disabled = false;
+      dlBtn.addEventListener('click', function () {
+        var url = URL.createObjectURL(res.blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = outName;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+
+      // store for download-all
+      item._download = function () { dlBtn.click(); };
+    }).catch(function (e) {
+      sizesEl.textContent = 'Error: ' + e.message;
+    });
+  }
+
+  $('#btn-download-all').addEventListener('click', function () {
+    Array.from(listEl.querySelectorAll('.file-item')).forEach(function (item, i) {
+      if (item._download) setTimeout(item._download, i * 200);
+    });
+  });
+
+  $('#btn-clear').addEventListener('click', function () {
+    listEl.innerHTML = '';
+    globalActions.style.display = 'none';
+  });
+
+  // re-render on quality change for visual feedback only
+  var qSlider = $('#quality'), qNum = $('#quality-num');
+  qSlider.addEventListener('input', function () { qNum.textContent = qSlider.value; });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+})();
+</script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8f7eb7845b6441b7bdc99c35920e3251"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

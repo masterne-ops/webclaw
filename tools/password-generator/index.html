@@ -32,6 +32,18 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://webclaw.pages.dev/" },
+    { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://webclaw.pages.dev/#tools" },
+    { "@type": "ListItem", "position": 3, "name": "Password Generator" }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
     {
@@ -153,8 +165,18 @@
 
 <main>
   <section class="container tool-page">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="sep">›</span>
+      <a href="/#tools">Tools</a>
+      <span class="sep">›</span>
+      <span class="current">Password Generator</span>
+    </nav>
     <h1>Password Generator</h1>
     <p class="lead">Generate strong, random passwords using your browser's cryptographic random source. Nothing is sent over the network.</p>
+    <p class="quick-links">
+      <a href="#faq">Jump to FAQ ↓</a>
+    </p>
 
     <div class="pwd-output" id="output" aria-live="polite">click Generate</div>
 

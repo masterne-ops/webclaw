@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JSON Formatter & Validator — Free Online Tool | webclaw</title>
+<meta name="description" content="Free online JSON formatter and validator. Pretty-print, minify, and validate JSON instantly in your browser. No upload, no signup, fully private." />
+<meta name="keywords" content="json formatter, json validator, json beautifier, json pretty print, json minify, online json tool" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://webclaw.com/tools/json-formatter/" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="JSON Formatter & Validator — Free Online Tool" />
+<meta property="og:description" content="Format, validate, and minify JSON instantly. Runs entirely in your browser." />
+<meta property="og:url" content="https://webclaw.com/tools/json-formatter/" />
+<meta property="og:type" content="website" />
+
+<link rel="stylesheet" href="/assets/styles.css" />
+
+<!-- JSON-LD: SoftwareApplication for richer SERP -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "JSON Formatter & Validator",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free online JSON formatter and validator. Pretty-print, minify, and validate JSON instantly in your browser.",
+  "url": "https://webclaw.com/tools/json-formatter/"
+}
+</script>
+
+<!-- AdSense placeholder -->
+<!--
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">web<span>claw</span></a>
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="container tool-page">
+    <h1>JSON Formatter & Validator</h1>
+    <p class="lead">Paste your JSON below to format, validate, or minify. Everything happens locally — your data never leaves your browser.</p>
+
+    <div class="toolbar">
+      <button class="btn primary" id="btn-format">Format</button>
+      <button class="btn" id="btn-minify">Minify</button>
+      <button class="btn" id="btn-validate">Validate</button>
+      <button class="btn" id="btn-copy">Copy Output</button>
+      <button class="btn" id="btn-sample">Load Sample</button>
+      <button class="btn" id="btn-clear">Clear</button>
+      <select class="btn" id="indent" aria-label="Indent size">
+        <option value="2">2 spaces</option>
+        <option value="4">4 spaces</option>
+        <option value="tab">Tab</option>
+      </select>
+    </div>
+
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+
+    <div class="editor-wrap">
+      <div class="editor-pane">
+        <label for="input">Input</label>
+        <textarea id="input" class="editor" spellcheck="false" placeholder='{"hello":"world","numbers":[1,2,3]}'></textarea>
+      </div>
+      <div class="editor-pane">
+        <label for="output">Output</label>
+        <textarea id="output" class="editor" spellcheck="false" readonly placeholder="Formatted JSON will appear here..."></textarea>
+      </div>
+    </div>
+
+    <!-- Ad slot reserved (only loads after AdSense approval) -->
+    <div class="ad-slot" id="ad-slot-1"></div>
+
+    <article class="article">
+      <h2>About this JSON Formatter</h2>
+      <p>JSON (JavaScript Object Notation) is the most common data interchange format on the web. This tool helps developers <strong>format, validate, and minify JSON</strong> directly in the browser — no data is uploaded to any server.</p>
+
+      <h3>Features</h3>
+      <ul>
+        <li><strong>Format / Pretty-print</strong> — convert minified JSON into a readable indented form.</li>
+        <li><strong>Minify</strong> — strip whitespace to produce the smallest possible JSON.</li>
+        <li><strong>Validate</strong> — check whether your JSON is syntactically correct, with the line and column of any error.</li>
+        <li><strong>Configurable indent</strong> — 2 spaces, 4 spaces, or tab.</li>
+        <li><strong>Privacy</strong> — runs entirely client-side. Your JSON is never transmitted.</li>
+      </ul>
+
+      <h3>How to use</h3>
+      <ol>
+        <li>Paste your JSON into the <em>Input</em> field on the left.</li>
+        <li>Click <strong>Format</strong> to pretty-print, <strong>Minify</strong> to compress, or <strong>Validate</strong> to check syntax only.</li>
+        <li>Use <strong>Copy Output</strong> to copy the result to your clipboard.</li>
+      </ol>
+
+      <h3>Common JSON errors</h3>
+      <ul>
+        <li><code>Unexpected token</code> — usually a stray comma or missing quote. JSON does not allow trailing commas.</li>
+        <li><code>Unexpected end of JSON input</code> — an unclosed bracket or brace.</li>
+        <li>Single quotes — JSON requires <strong>double quotes</strong> around strings and keys.</li>
+        <li>Comments — standard JSON does not support <code>//</code> or <code>/* */</code> comments.</li>
+      </ul>
+    </article>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>
+      <a href="/">Home</a> ·
+      <a href="/about.html">About</a> ·
+      <a href="/privacy.html">Privacy</a>
+    </p>
+    <p style="margin-top:8px;">&copy; <span id="year"></span> webclaw</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var $input = document.getElementById('input');
+  var $output = document.getElementById('output');
+  var $status = document.getElementById('status');
+  var $indent = document.getElementById('indent');
+
+  function showStatus(msg, ok) {
+    $status.textContent = msg;
+    $status.classList.remove('ok', 'err');
+    $status.classList.add(ok ? 'ok' : 'err');
+    $status.classList.add('show');
+  }
+  function clearStatus() {
+    $status.className = 'status';
+    $status.textContent = '';
+  }
+
+  function getIndent() {
+    var v = $indent.value;
+    if (v === 'tab') return '\t';
+    return parseInt(v, 10) || 2;
+  }
+
+  // Compute line/column from a SyntaxError "position N" if present
+  function locateError(text, err) {
+    var msg = String(err && err.message || err);
+    var m = msg.match(/position\s+(\d+)/i);
+    if (!m) return msg;
+    var pos = parseInt(m[1], 10);
+    var slice = text.slice(0, pos);
+    var line = slice.split('\n').length;
+    var col = pos - slice.lastIndexOf('\n');
+    return msg + '  (line ' + line + ', column ' + col + ')';
+  }
+
+  function parseInput() {
+    var text = $input.value;
+    if (!text.trim()) {
+      throw new Error('Input is empty');
+    }
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      var err = new Error(locateError(text, e));
+      err.original = e;
+      throw err;
+    }
+  }
+
+  document.getElementById('btn-format').addEventListener('click', function () {
+    try {
+      var obj = parseInput();
+      $output.value = JSON.stringify(obj, null, getIndent());
+      $input.classList.remove('is-error');
+      showStatus('Valid JSON — formatted.', true);
+    } catch (e) {
+      $output.value = '';
+      $input.classList.add('is-error');
+      showStatus(e.message, false);
+    }
+  });
+
+  document.getElementById('btn-minify').addEventListener('click', function () {
+    try {
+      var obj = parseInput();
+      $output.value = JSON.stringify(obj);
+      $input.classList.remove('is-error');
+      showStatus('Valid JSON — minified.', true);
+    } catch (e) {
+      $output.value = '';
+      $input.classList.add('is-error');
+      showStatus(e.message, false);
+    }
+  });
+
+  document.getElementById('btn-validate').addEventListener('click', function () {
+    try {
+      parseInput();
+      $input.classList.remove('is-error');
+      showStatus('Valid JSON.', true);
+    } catch (e) {
+      $input.classList.add('is-error');
+      showStatus(e.message, false);
+    }
+  });
+
+  document.getElementById('btn-copy').addEventListener('click', function () {
+    if (!$output.value) {
+      showStatus('Nothing to copy.', false);
+      return;
+    }
+    navigator.clipboard.writeText($output.value).then(function () {
+      showStatus('Copied to clipboard.', true);
+    }, function () {
+      // fallback
+      $output.select();
+      document.execCommand('copy');
+      showStatus('Copied to clipboard.', true);
+    });
+  });
+
+  document.getElementById('btn-sample').addEventListener('click', function () {
+    $input.value = '{"name":"webclaw","tools":[{"id":"json-formatter","stable":true},{"id":"image-compressor","stable":false}],"count":2,"meta":{"createdAt":"2026-04-26"}}';
+    $input.classList.remove('is-error');
+    clearStatus();
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', function () {
+    $input.value = '';
+    $output.value = '';
+    $input.classList.remove('is-error');
+    clearStatus();
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>

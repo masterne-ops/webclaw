@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://webclaw.com/sitemap.xml
+Sitemap: https://webclaw.pages.dev/sitemap.xml
